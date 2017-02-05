@@ -342,8 +342,10 @@ class ReshapeProp : public OperatorProperty {
                  std::vector<int> *aux_type) const override {
     CHECK_EQ(in_type->size(), 1);
     int dtype = (*in_type)[0];
-    CHECK_NE(dtype, -1) << "First input must have specified type";
-
+    if (dtype == -1) {
+      dtype = mshadow::DataType<float>::kFlag;
+      (*in_type)[0] = dtype;
+    }
     out_type->clear();
     out_type->push_back(dtype);
     return true;
